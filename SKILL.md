@@ -45,25 +45,13 @@ This command will create a `package.json` file and fill it with the following in
 
 ```
 
-### Step 2: install dependencies
-
-```bash
-npm i next@latest react@latest react-dom@latest
-```
-
-### Step 3: install dev dependencies
-
-```bash
-npm i -D @types/{node,react,react-dom} typescript@latest tailwindcss@latest babel-plugin-react-compiler@latest
-```
-
-### Step 4: initialize git repository
+### Step 2: initialize git repository
 
 ```bash
 git init
 ```
 
-### Step 5: create .gitignore and apply config
+### Step 3: create .gitignore and apply config
 
 ```bash
 touch .gitignore
@@ -111,6 +99,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+```
+
+### Step 4: install dependencies
+
+```bash
+npm i next@latest react@latest react-dom@latest
+```
+
+### Step 5: install dev dependencies
+
+```bash
+npm i -D @types/{node,react,react-dom} typescript@latest tailwindcss@latest babel-plugin-react-compiler@latest
 ```
 
 ### Step 6: Create the next config file and apply config
@@ -253,7 +253,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     </html>
   );
 }
-
 ```
 
 ### Step 14: Populate `app/page.tsx`
