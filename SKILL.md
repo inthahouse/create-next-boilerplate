@@ -3,7 +3,7 @@ name: 'create-next-boilerplate'
 description: 'Creates a custom nextjs boilerplate project.'
 metadata:
     author: 'inthahouse'
-    version: '0.0.1'
+    version: '0.0.2'
     created: '2026-08-11'
 ---
 
@@ -39,7 +39,10 @@ This command will create a `package.json` file and fill it with the following in
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:migrate": "drizzle-kit migrate",
   },
   "type": "module"
 }
@@ -100,18 +103,20 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.claude
 ```
 
 ### Step 4: install dependencies
 
 ```bash
-npm i next@latest react@latest react-dom@latest
+npm i next@latest react@latest react-dom@latest drizzle-orm @neondatabase/serverless dotenv
 ```
 
 ### Step 5: install dev dependencies
 
 ```bash
-npm i -D @types/{node,react,react-dom} typescript@latest tailwindcss@latest babel-plugin-react-compiler@latest @tailwindcss/postcss
+npm i -D @types/{node,react,react-dom} typescript@latest tailwindcss@latest babel-plugin-react-compiler@latest @tailwindcss/postcss drizzle-kit tsx
 ```
 
 ### Step 6: Create the next config file and apply config
@@ -325,4 +330,71 @@ export default function Home() {
     </div>
   )
 }
+```
+
+### Step 15: Create drizzle config at the root level
+
+```bash
+touch drizzle.config.ts
+```
+
+Add the following code in the newly created file
+
+```ts
+import { config } from 'dotenv'
+import { defineConfig } from 'drizzle-kit'
+
+config({ path: '.env' })
+
+export default defineConfig({
+  schema: './db/schema.ts',
+  out: './drizzle',
+  dialect: 'postgresql',
+  dbCredentials: {
+    url: process.env.DATABASE_URL!,
+  },
+})
+```
+
+### Step 16: Create .env .env.sample files
+
+```bash
+touch .env .env.sample
+```
+
+Add the following variable in both files
+
+```
+DATABASE_URL=
+```
+
+### Step 17: Create drizzle and schemas related items
+
+```
+mkdir drizzle db
+touch db/index.ts db/schema.ts
+```
+
+Add the following code in `db/index.ts`
+
+```ts
+import { neon } from '@neondatabase/serverless'
+import { drizzle } from 'drizzle-orm/neon-http'
+import * as schema from './schema'
+
+const sql = neon(process.env.DATABASE_URL!)
+export const db = drizzle(sql, { schema })
+```
+
+Add the following code in `db/schema.ts`
+
+```ts
+import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+
+export const posts = pgTable('posts', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  title: text('title').notNull(),
+  description: text('description').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
 ```
