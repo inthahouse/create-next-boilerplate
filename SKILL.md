@@ -110,7 +110,7 @@ npm i next@latest react@latest react-dom@latest
 ### Step 5: install dev dependencies
 
 ```bash
-npm i -D @types/{node,react,react-dom} typescript@latest tailwindcss@latest babel-plugin-react-compiler@latest
+npm i -D @types/{node,react,react-dom} typescript@latest tailwindcss@latest babel-plugin-react-compiler@latest @tailwindcss/postcss
 ```
 
 ### Step 6: Create the next config file and apply config
@@ -154,6 +154,58 @@ import "./.next/dev/types/root-params.d.ts";
 
 ```bash
 tsc --init
+```
+
+Modify `tsconfig.json` with the following config.
+
+```json
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    },
+
+    "types": ["node"],
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "verbatimModuleSyntax": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+  },
+  "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+
 ```
 
 ### Step 9: Create postcss config and apply config
